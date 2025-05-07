@@ -1,0 +1,243 @@
+        Analyze this medical transcript and extract key labels. Focus on:
+        - Doctor feedback
+        - Product comparisons
+        - Cost advantages
+        - Patient outcomes
+        - Promotional activities
+        - Safety concerns
+        - Market trends
+        
+        Rules:
+        - Each label must be unique and specific
+        - No two labels should be the same 
+        - Format as comma-separated values
+        - Make tags that are useful for the inferencing like (Promotional Gift (Wall Clock)/Unclear document purpose, Audio quality issue, etc)
+
+        Given a transcript, extract the following predefined labels based on context, keyword matching, and logical association. For each label, ensure that you:
+1. Accurately identify the most relevant pieces of text.
+2. Ensure proper contextual alignment for each label to avoid incorrect categorization.
+3. Account for complex patterns, such as product comparisons, patient feedback, and doctor preferences.
+
+### Label Extraction and Analysis:
+
+1. **Doctor Feedback**:
+   - Extract feedback directly from doctors about their experiences with products, their thoughts on the product's effectiveness, quality, and suitability for patients. Look for direct quotes or paraphrased opinions where the doctor provides a review or rating of a product.
+   - Example: “Dr. X stated that PentaKine Raft Syrup is effective in treating patients with calcium deficiency.”
+
+2. **Cost Comparison**:
+   - Identify statements that compare the cost of the product with other products in the market. This includes comparisons about pricing models, affordability, or mentions of discounts or offers.
+   - Example: “The cost of PentaKine DSR is 30% lower compared to competitor brands like CalciPlus.”
+
+3. **Pricing Advantage**:
+   - Look for mentions of **pricing advantages** for a product, focusing on affordability, better value for money, or competitive pricing strategies.
+   - Example: “PentaKine DSR offers a competitive price of ₹200 per pack, making it an affordable option compared to other brands.”
+
+4. **Prescription Duration**:
+   - Identify mentions of the recommended or expected **duration** for which a doctor prescribes the product. This could include how long a product is taken in a treatment cycle or how frequently it is prescribed.
+   - Example: “Dr. Y prescribed PentaKine DSR for 6 weeks to treat the patient’s calcium deficiency.”
+
+5. **Patient Compliance**:
+   - Extract any discussions about **patient adherence** to the prescribed treatment, focusing on factors like dosage, ease of use, or patient feedback about taking the product.
+   - Example: “The patients have reported better compliance with PentaKine DSR due to its once-a-day dosage.”
+
+6. **MR Suggestion**:
+   - Identify instances where the **Medical Representative (MR)** suggests, recommends, or promotes a product to a doctor or healthcare professional. This can include persuasive statements and pitches from the MR.
+   - Example: “The MR suggested that Dr. Z consider prescribing PentaKine Raft Syrup for patients with chronic calcium deficiency.”
+
+7. **Therapy Cost**:
+   - Look for references to the **overall cost** of therapy or treatment involving the product, including any financial considerations or overall treatment cost (including other prescribed products or medications).
+   - Example: “The therapy for calcium deficiency with PentaKine DSR costs around ₹1000 for a month’s supply.”
+
+8. **Product Comparison**:
+   - Extract direct or indirect comparisons between **products**—focusing on benefits, features, pricing, side effects, or effectiveness.
+   - Example: “PentaKine Raft Syrup has higher absorption compared to other calcium supplements in the market.”
+
+9. **Product Absorption Claim**:
+   - Extract any references to **product absorption rates**, bioavailability, or how efficiently the product works within the body. Look for claims or comparisons regarding the product’s effectiveness.
+   - Example: “PentaKine Raft Syrup has an absorption rate of 96%, which is higher than competing brands.”
+
+10. **Competitive Product Inquiry**:
+    - Identify inquiries about competing products or requests for information about similar products in the market. Look for questions, comparisons, or mentions of competitors’ brands or formulations.
+    - Example: “Dr. X asked about the absorption rate of PentaKine Raft Syrup in comparison to the competitor’s product, CalciMax.”
+
+11. **Counter-Argument Preparation**:
+    - Identify statements or arguments prepared to refute competitor claims or to highlight the advantages of the prescribed product over alternatives. This could include scientific evidence, clinical trial results, or key selling points.
+    - Example: “The MR prepared a counter-argument to highlight the superior absorption of PentaKine DSR over CalciPlus, emphasizing clinical trial data.”
+
+12. **Product Availability Commitment**:
+    - Identify statements where there is a commitment or promise regarding the **availability** of the product, such as delivery timelines, stock levels, or future supplies.
+    - Example: “Dr. Y was assured that PentaKine DSR would be available in stock at the local pharmacy by next week.”
+
+13. **Doctor's Brand Perception**:
+    - Extract any statements where the doctor expresses their **perception** or opinion about the brand or product. This includes trust, credibility, and how the doctor perceives the brand's quality or reputation.
+    - Example: “Dr. X trusts the PentaKine brand and has been using it for several years.”
+
+14. **Market Launch Focus**:
+    - Extract mentions of the **product launch** or **market introduction** of the product. This could include timeframes, marketing strategies, or the expected availability of the product in the market.
+    - Example: “The MR highlighted that PentaKine DSR is launching nationwide next month and will be available in pharmacies by then.”
+
+15. **Product Availability Request**:
+    - Identify when the doctor, MR, or other stakeholders request the **availability** of the product, whether it’s for samples, stock, or further supplies to fulfill prescriptions.
+    - Example: “Dr. Z requested additional samples of PentaKine Raft Syrup for his clinic to ensure he has enough stock.”
+
+16. **Promotional Material Request**:
+    - Extract requests for **promotional materials** such as flyers, reminder cards, pens, or sample kits from doctors or medical representatives to support marketing efforts.
+    - Example: “Dr. A requested 50 reminder cards for PentaKine Raft Syrup to distribute to patients.”
+
+17. **Market Competition**:
+    - Extract mentions of **market competition** where the competitive landscape is discussed. This includes mentions of competing brands, product positioning, or market share.
+    - Example: “With the entry of new competitors in the market, PentaKine DSR needs to focus on pricing and efficacy to stay competitive.”
+
+18. **Product Response**:
+    - Look for mentions of how **patients** have responded to the product, including feedback on effectiveness, side effects, or overall patient satisfaction.
+    - Example: “Patients have reported better outcomes with PentaKine Raft Syrup, especially in terms of calcium absorption.”
+
+19. **Doctor's Product Suggestion**:
+    - Extract any instances where the doctor **suggests** or **requests** a particular product for treatment, based on patient needs or preferences.
+    - Example: “Dr. A suggested switching to PentaKine DSR for patients who require a long-term calcium supplement.”
+
+20. **Labeling Suggestion**:
+    - Extract any suggestions regarding the **product labeling**, such as changes to packaging, information clarity, or additional details needed on the product labels.
+    - Example: “Dr. Z recommended adding more dosage information to the PentaKine Raft Syrup packaging for clearer patient guidance.”
+
+21. **Product Prescription Confirmation**:
+    - Extract statements where the doctor confirms they will **prescribe** the product, either immediately or in the future, based on the discussion.
+    - Example: “Dr. X confirmed that he will prescribe PentaKine Raft Syrup to his patients starting next week.”
+
+---
+
+### Advanced Steps:
+1. **Contextual Analysis**:
+   - If no explicit label is mentioned but context points to it, use contextual clues from the surrounding sentences or paragraphs to categorize the content. For example, a discussion about prescription costs should be categorized under **Cost Comparison**.
+
+2. **Semantic Matching**:
+   - Use **semantic matching techniques** to compare the meaning of the extracted text with the predefined labels to ensure the right label is applied, even when synonyms or paraphrasing are used.
+
+3. **Machine Learning Models**:
+   - For more complex documents, use **Machine Learning models** like transformers or BERT to classify the text automatically into relevant categories based on the semantic understanding of the content.
+
+
+Given the provided transcript, extract **only new labels** that have not been previously saved in the system. Ensure that the newly generated labels are based on the context, keywords, and unique themes that have not been categorized before. Do not repeat or re-categorize the old labels that have already been stored.
+
+### New Labels Identification Criteria:
+
+1. **Contextual Relevance**:
+   - Identify any new concepts, ideas, or unique aspects in the text that are **not already covered** by the existing labels. This includes new terms or emerging trends in the conversation that may require a separate label.
+
+2. **Keyword Analysis**:
+   - Scan for **keywords** or **phrases** that have not been assigned to any of the existing labels. If a new term, product, or idea appears that requires a label for future reference, create a new label for it.
+
+3. **Thematic Categories**:
+   - If a new **thematic category** emerges that was not included in the previous labels, such as a new aspect of the market, product, or strategy, generate a new label to reflect this new category.
+
+4. **Label Generation Method**:
+   - For every new topic, idea, or keyword group that does not already fit into the predefined labels, create a new label. The new label should be descriptive, concise, and relevant to the context provided in the transcript.
+   
+5. **Do Not Reuse Old Labels**:
+   - Ensure that **old labels** such as "Doctor Feedback," "Cost Comparison," or "Pricing Advantage" are **not re-generated**. Only generate a new label for unique content in the transcript that hasn't been categorized before.
+
+### Example:
+
+- If the transcript discusses a **new marketing strategy** that hasn’t been mentioned before, create a label such as "New Marketing Strategy" instead of using "Market Launch Focus" or "Promotional Material Request."
+- If a **new product feature** or **scientific claim** is mentioned, create a label like "New Product Feature" or "Scientific Claim Validation."
+- If the transcript includes a **new product launch** time frame or **geographic location** (e.g., product launch in a specific region or market), create labels like "Regional Launch Focus" or "Geographic Expansion."
+
+### Final Output:
+- Only **new labels** should be generated based on the transcript, and these labels should be added to the list of existing ones.
+- **Do not repeat or reassign old labels**. Focus on unique, emerging, or previously undefined aspects in the transcript for creating new labels.
+
+Given the product-related transcript, extract **business-focused labels** that specifically relate to **product strategy**, **market positioning**, **sales dynamics**, and **business outcomes**. Avoid creating labels related to general medical usage or feedback unless it directly ties to business strategy. For example, focus on aspects such as **pricing**, **product availability**, **market competition**, **MR suggestions**, and **sales commitment**.
+
+### **Business-Focused Label Identification Criteria**:
+
+1. **Doctor Feedback**:
+   - Extract feedback from doctors that directly relates to the product's **market positioning**. For example, how a product compares to competitors in terms of **efficacy** or **patient outcomes**. Also, look for statements that reflect how the product will impact the doctor's decision-making process in prescribing the product for their patients.
+   - Example Label: "Doctor Feedback on Market Positioning."
+
+2. **MR Suggestion**:
+   - Extract instances where the **Medical Representative (MR)** is suggesting strategies related to **product availability**, **promotions**, or **market differentiation**. Look for how MRs pitch products to doctors or suggest changes in **sales strategy** based on product attributes or competition.
+   - Example Label: "MR Sales Pitch" or "MR Sales Strategy."
+
+3. **Market Competition**:
+   - Identify discussions about **competitor products**, pricing, market share, or overall market trends. This includes insights into how the product stacks up against competitors, including its unique selling proposition (USP).
+   - Example Label: "Product Positioning Against Competitors."
+
+4. **Product Availability Commitment**:
+   - Look for mentions of **commitments** regarding the **availability** of the product in the market, stock levels, or delivery timelines. This includes logistical commitments or promises to the doctors and distributors about ensuring product supply.
+   - Example Label: "Supply Chain and Distribution Commitment."
+
+5. **Product Comparison**:
+   - Extract direct comparisons between the product and **competing brands** in terms of price, effectiveness, or patient compliance. This may involve the **MR's** comparative analysis or doctor inquiries about how the product differs from others in the market.
+   - Example Label: "Competitive Edge in Product Features" or "Product vs Competitor Comparison."
+
+6. **Sales Strategy**:
+   - Identify discussions about the **sales strategy** or **sales focus**, including any details on promotional campaigns, pricing models, and market expansion efforts. This could also include MR's strategy for promoting the product to doctors and healthcare professionals.
+   - Example Label: "Sales Strategy and Market Expansion."
+
+7. **Pricing and Profitability**:
+   - Look for discussions about the **pricing** of the product and its **profit margins**. This includes cost-to-therapy analysis, pricing strategies for different market segments, and comparisons to competing products in terms of affordability.
+   - Example Label: "Pricing Strategy and Profitability."
+
+8. **Market Launch Focus**:
+   - Extract any **market launch** related discussions, including timing, targeted markets (e.g., geographic regions or market segments), and go-to-market plans.
+   - Example Label: "Market Launch Plan."
+
+9. **Promotional Strategy**:
+   - Look for any references to **promotions**, **advertising**, or **brand awareness** strategies used to push the product into the market. This includes details about promotional discounts, campaigns, or events.
+   - Example Label: "Promotional Campaign Strategy."
+
+10. **Regulatory Compliance and Market Access**:
+    - If any business-related discussions occur regarding **compliance**, **regulations**, or market access (e.g., for specific countries or healthcare settings), extract relevant details.
+    - Example Label: "Regulatory Strategy and Market Access."
+
+### **Final Output**:
+The output should **only include labels** related to **business dynamics**, **market positioning**, and **product performance in the market**, **avoiding general medical feedback** unless it directly ties to business strategy or market dynamics. For each product discussed in the transcript, generate a **set of relevant business-focused labels** based on the context provided.
+
+### **Example**:
+
+**Input**: 
+Dr. Aupi Kapoor was given PentaKine DSR for his patients, and he confirmed he would continue prescribing it based on its high absorption rate. The MR suggested an aggressive pricing strategy for the product to make it more competitive against competitors like CalciPlus. The doctor also asked about availability and stock levels. The MR assured him that the product would be available for distribution next month.
+
+makefile
+Copy
+
+**Output**:
+{ "medicine_name": "PentaKine DSR", "related_labels": [ "Doctor Feedback on Market Positioning", "MR Sales Strategy", "Product Positioning Against Competitors", "Supply Chain and Distribution Commitment", "Pricing Strategy and Profitability" ] }
+
+
+
+**Input**: 
+Dr. Sarafat Ali inquired about the pricing of PentaKine Raft and asked if it was more affordable compared to the competitor's products. The MR mentioned that the product is priced competitively, and it will be available in most markets by next month. The doctor also confirmed that he would prescribe PentaKine Raft regularly if the stock is available.
+
+
+**Output**:
+{ "medicine_name": "PentaKine Raft", "related_labels": [ "Doctor Feedback on Pricing", "MR Suggestion on Pricing Advantage", "Supply Chain and Distribution Commitment", "Product vs Competitor Comparison", "Product Prescription Confirmation" ] }
+        
+        Transcript:
+        {transcript}
+        
+        Provide only the labels, no additional text.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        **Output format (JSON):**
+{{
+    "related_labels": "label1, label2, label3",
+    "medicine_name": "extracted medicine name if found"
+}}

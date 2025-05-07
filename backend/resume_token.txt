@@ -1,0 +1,103 @@
+{'_data': '82681347DE000000022B042C0100296E5A10043E3D7E7E34764C0FBD97304ABA87C28E463C6F7065726174696F6E54797065003C7570646174650046646F63756D656E744B65790046645F69640064681347794867E1D8F59DC0FF000004'}
+
+
+
+
+
+
+
+
+
+   def _create_insight_prompt(self, medicine_name: str, label: Optional[str], label_data: Dict, documents: List[Dict]) -> str:
+        """Create the prompt for insight generation"""
+        prompt = f"""
+**Objective:**
+Generate comprehensive business insights for the medicine {medicine_name} based on collected transcripts.
+{f"Focusing specifically on the label: {label}" if label else "Analyzing all available labels."}
+
+**Context:**
+- Total documents analyzed: {len(documents)}
+- Labels found: {len(label_data)}
+{f"- Specific label being analyzed: {label}" if label else ""}
+
+**Label Data:**
+"""
+        for lbl, data in label_data.items():
+            prompt += f"- {lbl} (appears in {data['count']} documents):\n"
+            for reason in data.get("reasons", []):
+                prompt += f"  - Reason: {reason}\n"
+        
+        prompt += """
+**Instructions:**
+1. Analyze the label data and reasons to identify patterns and trends.
+2. Provide actionable business insights for product managers and marketing teams.
+3. Focus on the labels and how can we improve our market position in positive way and also give suggestions if there are any negative labels.
+4. Structure your response with clear sections in paragraph format**.
+5. Keep the language professional but accessible.
+6. Include specific recommendations where possible.
+
+**Output Format:**
+Provide a detailed analysis in the following structure:
+-[Important**]To the main topic and showing insights which are business useful and relevant to the business perspective.
+-The summary should have detail and conscise information where the business is doing well and where they need to improve and work on the business for the same 
+- The Summary should be detailed and extended and should be in paragraph format and not in bullet points. 
+- The Summary should be in the detailed with no useless information and should be in the business perspective and should be in the business language and should be in the business format
+
+
+1. **Executive Summary** (2-3 sentences)
+2. **Key Findings** (bullet points)
+3. **Opportunities** (specific actionable items)
+4. **Recommendations** (concrete next steps)
+in paragraph format.
+
+**Example:**
+The analysis of [Medicine] indicates strong acceptance among doctors, with many consistently praising the product's efficacy. However, pricing has emerged as a significant concern when compared to competitors. Notably, 65% of transcripts highlight competitive pricing as a key barrier to adoption. To address this, there are opportunities to develop targeted discount programs specifically for high-prescribing doctors, along with the creation of marketing materials that emphasize the medicine's superior efficacy. In light of these insights, it is recommended to conduct a detailed pricing study within the next quarter and to organize medical representative (MR) training sessions focused on effectively addressing pricing objections.
+
+**Now generate insights for {medicine_name}:**
+**Required Output Format:**
+
+# {medicine_name}
+
+**Feedback**
+[Summary of positive and negative feedback, 2-3 concise bullet points]
+
+---
+
+## Competition
+[Main competitors and market position, 1-2 sentences]
+
+---
+
+## Pricing
+[Pricing analysis and suggestions, 1-2 sentences]
+
+---
+
+## MR Suggestions
+[2-3 actionable suggestions for medical representatives]
+
+---
+
+## Additional Insights
+[Any other relevant insights]
+
+Keep each section concise and focused. Use bullet points where appropriate.
+"""
+        prompt += f"\n\n**Context Data:**\n- Total documents: {len(documents)}\n"
+        for lbl, data in label_data.items():
+            prompt += f"- {lbl} ({data['count']} documents):\n"
+            for reason in data.get("reasons", []):
+                prompt += f"  - {reason}\n"
+        
+        return prompt
+
+    # ... (rest of the methods remain the same)
+    def get_insights_history(self, medicine_name: Optional[str] = None, label: Optional[str] = None, limit: int = 10) -> List[Dict]:
+        """Get historical insights with optional filters"""
+        query = {}
+        if medicine_name:
+            query["medicine_name"] = medicine_name
+        if label:
+            query["label"] = label
+        
+        return list(self.insights_collection.find(query).sort("generated_at", -1).limit(limit))
