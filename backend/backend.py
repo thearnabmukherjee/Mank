@@ -18,6 +18,7 @@ import certifi
 from qdrant import qdrant_service
 from concurrent.futures import ThreadPoolExecutor
 import time
+import logging
 from openai import OpenAI
 from insights import init_insights_service
 
