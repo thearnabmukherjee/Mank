@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition
+from label_theme_mapper import group_labels_by_theme
+
 
 # Load environment variables
 load_dotenv()
@@ -22,7 +24,7 @@ class InsightsService:
             url=os.getenv("QDRANT_URL"),
             api_key=os.getenv("QDRANT_API_KEY")
         )
-        self.qdrant_collection = "mongodb_to_qdrant"  # Your Qdrant collection name
+        self.qdrant_collection = "Pharma"  # Your Qdrant collection name
         
         # Initialize OpenAI client
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -115,7 +117,7 @@ class InsightsService:
             prompt = self._create_insight_prompt(medicine_name, label, label_data, qdrant_results)
             
             response = self.client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4.1",
                 messages=[
                     {"role": "system", "content": "You are a pharmaceutical business analyst."},
                     {"role": "user", "content": prompt}
@@ -144,6 +146,33 @@ class InsightsService:
         except Exception as e:
             print(f"Error generating insights: {str(e)}")
             return None
+        
+
+    def _generate_action_for_reason(self, label: str, reason: str) -> str:
+        try:
+            prompt = f"""
+    You are a pharmaceutical business strategist.
+
+    A transcript was assigned the label: **{label}**
+    Because: "{reason}"
+
+    What **specific business action** should be taken in response?
+
+    Respond in a **single concise sentence**, actionable and realistic for a brand team or field force.
+    """
+            response = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You generate business actions from label reasons."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.6,
+                max_tokens=100
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            return f"[Action generation failed: {str(e)}]"
+
 
     # ... (keep other existing methods)
 
@@ -418,59 +447,144 @@ Return only the summary text, no additional formatting or labels.
             print(f"Error generating label summary: {str(e)}")
             return f"Summary generation failed: {str(e)}"
 
+    # def get_medicine_labels_with_reasons(self, medicine_name: str) -> Dict[str, Any]:
+    #     """Get labels and reasons directly from Qdrant"""
+    #     try:
+    #         results = self._search_qdrant(medicine_name)
+            
+    #         if not results:
+    #             return {
+    #                 "medicine_name": medicine_name,
+    #                 "labels": [],
+    #                 "summary": "No documents found"
+    #             }
+            
+    #         label_data = {}
+    #         for result in results:
+    #             payload = result['payload']
+    #             label = payload.get('label')
+    #             reason = payload.get('label_reason', '')
+    #             text = payload.get('text', '')
+                
+    #             if label not in label_data:
+    #                 label_data[label] = {
+    #                     "count": 0,
+    #                     "reasons": set(),
+    #                     "sample_texts": set()
+    #                 }
+    #             label_data[label]["count"] += 1
+    #             if reason:
+    #                 label_data[label]["reasons"].add(reason)
+    #             if text:
+    #                 sample = text[:100] + ("..." if len(text) > 100 else "")
+    #                 label_data[label]["sample_texts"].add(sample)
+            
+    #         # Convert sets to lists
+    #         for label in label_data:
+    #             label_data[label]["reasons"] = list(label_data[label]["reasons"])
+    #             label_data[label]["sample_texts"] = list(label_data[label]["sample_texts"])
+
+    #             label_data[label]["actions"] = []
+    #             for reason in label_data[label]["reasons"]:
+    #                 action = self._generate_action_for_reason(label, reason)
+    #                 label_data[label]["actions"].append({
+    #                     "reason": reason,
+    #                     "action": action
+    #                 })
+            
+    #         # Generate summary (use your existing _generate_label_summary method)
+    #         summary = self._generate_label_summary(medicine_name, label_data)
+            
+    #         return {
+    #             "medicine_name": medicine_name,
+    #             "labels": label_data,
+    #             "summary": summary,
+    #             "document_count": len(results)
+    #         }
+            
+    #     except Exception as e:
+    #         print(f"Error getting labels: {str(e)}")
+    #         return {
+    #             "medicine_name": medicine_name,
+    #             "error": str(e)
+    #         }
+
+    from label_theme_mapper import group_labels_by_theme
+
     def get_medicine_labels_with_reasons(self, medicine_name: str) -> Dict[str, Any]:
-        """Get labels and reasons directly from Qdrant"""
+        """Get labels and reasons directly from Qdrant, with dynamic actions and theme grouping"""
         try:
             results = self._search_qdrant(medicine_name)
-            
+
             if not results:
                 return {
                     "medicine_name": medicine_name,
-                    "labels": [],
-                    "summary": "No documents found"
+                    "themes": {},
+                    "summary": "No documents found",
+                    "document_count": 0
                 }
-            
+
             label_data = {}
+
             for result in results:
                 payload = result['payload']
                 label = payload.get('label')
                 reason = payload.get('label_reason', '')
                 text = payload.get('text', '')
-                
+
+                if not label:
+                    continue
+
                 if label not in label_data:
                     label_data[label] = {
                         "count": 0,
                         "reasons": set(),
                         "sample_texts": set()
                     }
+
                 label_data[label]["count"] += 1
+
                 if reason:
                     label_data[label]["reasons"].add(reason)
                 if text:
-                    sample = text[:100] + ("..." if len(text) > 100 else "")
-                    label_data[label]["sample_texts"].add(sample)
-            
+                    snippet = text[:100] + ("..." if len(text) > 100 else "")
+                    label_data[label]["sample_texts"].add(snippet)
+
             # Convert sets to lists
             for label in label_data:
                 label_data[label]["reasons"] = list(label_data[label]["reasons"])
                 label_data[label]["sample_texts"] = list(label_data[label]["sample_texts"])
-            
-            # Generate summary (use your existing _generate_label_summary method)
+                # Generate dynamic actions
+                label_data[label]["actions"] = []
+                for reason in label_data[label]["reasons"]:
+                    action = self._generate_action_for_reason(label, reason)
+                    label_data[label]["actions"].append({
+                        "reason": reason,
+                        "action": action
+                    })
+
+            # Group by themes using mapper
+            theme_data = group_labels_by_theme(label_data)
+
+            # Generate a high-level summary
             summary = self._generate_label_summary(medicine_name, label_data)
-            
+
             return {
                 "medicine_name": medicine_name,
-                "labels": label_data,
+                "themes": theme_data,
                 "summary": summary,
                 "document_count": len(results)
             }
-            
+
         except Exception as e:
             print(f"Error getting labels: {str(e)}")
             return {
                 "medicine_name": medicine_name,
+                "themes": {},
+                "summary": "Error occurred",
                 "error": str(e)
             }
+
 
 # Initialize service
 def init_insights_service(db):

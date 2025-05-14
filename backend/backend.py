@@ -20,8 +20,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 from openai import OpenAI
 from insights import init_insights_service
-from chat1 import router as chat_router
-# from chat1 import router as chat_router
+
 
 # Load environment variables
 load_dotenv()
@@ -80,7 +79,7 @@ app.add_middleware(
 )
 
 
-app.include_router(chat_router)
+
 # Models
 class DocumentCreate(BaseModel):
     text: str
@@ -131,11 +130,12 @@ def extract_labels_from_text(text: str) -> tuple:
 **Objective:**  
 Analyze this medical transcript and extract EXCLUSIVELY business-relevant labels meeting ALL criteria:  
 1. **Three-word limit** (strictly enforced)  
-2. **Revenue/Competition/Operations focus** (no clinical terms)  
+2. **Revenue/Competition/Operations focus/Product** (no clinical terms)  
 3. **Actionable insights only** (no opinions/feedback)  
 
 **Allowed Categories:**  
 - Pricing Strategy (discounts, margins, offers)  
+-Product effectiveness (efficacy, side effects)
 - Market Competition (rival comparisons, switches)  
 - Supply Chain (stock, delivery, launches)  
 - Sales Commitments (prescriptions, quotas)
@@ -263,6 +263,7 @@ Input: "Guaranteed pharmacy availability in Tier-1 cities by Q3"
 2. Is it tied to revenue/competition/logistics?  
 3. Would it fit a sales dashboard?  
 If NO to any → DISCARD  
+4. Use Relavant Labels only which is easy to classify and easy to Understand
 
 
 **Transcript:**
@@ -273,7 +274,7 @@ If NO to any → DISCARD
 Return a JSON object with:
 - "related_labels": comma-separated list of labels
 - "label_reasons": a dictionary/object where each key is a label and the value is a detailed reason for that label
-- "label_summary": a detailed summary(1 sentences) of the key business insights from the Labels
+- "label_summary": a detailed summary of the key business insights from the Labels should have detailed summary of the key business insights from the transcript
 
 """.format(transcript=text)
     
@@ -769,6 +770,7 @@ async def get_medicine_labels(medicine_name: str):
         }},
         {"$sort": {"count": -1}}
     ]
+    
     
     labels = list(collection.aggregate(pipeline))
     
